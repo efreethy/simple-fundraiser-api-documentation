@@ -19,119 +19,77 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the SimpleFundraiser API, and glad to have you on board!
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+SimpleFundraiser provides a simple and powerful REST API.
+
+All product capabilites are supported through **six core resources**:
+
+  1. **Account**
+  2. **Fundraiser**
+  3. **Prize**
+  4. **Prize Program**
+  5. **Seller**
+
 
 This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
 
-# Authentication
+# Account
 
-> To authorize, use this code:
 
-```ruby
-require 'kittn'
+## Conceptual Overview
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
+Account holders can fall into one of two account types, which affects the portal they use
 
-```python
-import kittn
+* Account Type: **REPRESENTATIVE**
+  * These are the people who initially provision the fundraiser.
+  * These users work within the **fundraiser management portal**
+* Account Type: **SPONSOR**
+  * These are the people volunteer to oversee an individual fundraiser, they often are the parents of the sellers
+  * These users work within the **participant manager portal**
 
-api = kittn.authorize('meowmeowmeow')
-```
+## /account/login
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
+curl "http://example.com/api/account/login"
   -H "Authorization: meowmeowmeow"
 ```
 
 ```javascript
-const kittn = require('kittn');
+const fundraiserApi = require('simple-fundraiser');
 
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+const account = await fundraiserApi.account.login('username','password')
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+{
+  "api_token": "json web token",
+  "account": {
+    "id": "account id",
+    "account_type": "account type",
   }
-]
+}
 ```
 
-This endpoint retrieves all kittens.
+This endpoint logins in an account, and returns an authentication token
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET http://simplefundraier.com/api/account/login`
 
-### Query Parameters
+### Body Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+Parameter | Description
+--------- | ------- 
+username | Account holder's username
+password | Account holder's password
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+<aside class="warning">
+  The returned JSON web token must be used in the authorization header of any authed requests
 </aside>
+
 
 ## Get a Specific Kitten
 
@@ -165,11 +123,11 @@ let max = api.kittens.get(2);
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "api_token": "json web token"
+  "account": {
+    "id": "account id",
+    "account_type": "account type",
+  }
 }
 ```
 
@@ -237,3 +195,36 @@ Parameter | Description
 --------- | -----------
 ID | The ID of the kitten to delete
 
+
+# Fundraiser
+
+## GET    /fundraiser
+## POST   /fundraiser
+## GET    /fundraiser/:id
+## PATCH  /fundraiser/:id
+## DELETE /fundraiser/:id
+
+# Prize
+
+## GET    /prize
+## POST   /prize
+## GET    /prize/:id
+## PATCH  /prize/:id
+## DELETE /prize/:id
+
+# Prize Program
+
+## GET    /prize_program
+## POST   /prize_program
+## GET    /prize_program/:id
+## PATCH  /prize_program/:id
+## DELETE /prize_program/:id
+
+# Seller
+
+## GET    /seller
+## POST   /seller
+## GET    /seller/:id
+## PATCH  /seller/:id
+## DELETE /seller/:id
+## POST   /seller/:id/payment
